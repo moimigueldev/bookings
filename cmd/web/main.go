@@ -17,23 +17,23 @@ const portNumber = ":8080"
 var app config.AppConfig
 var session *scs.SessionManager
 
-// main us the main application function
+// main is the main function
 func main() {
-
-	// change htis to true when in production
+	// change this to true when in production
 	app.InProduction = false
 
+	// set up the session
 	session = scs.New()
 	session.Lifetime = 24 * time.Hour
-	session.Cookie.Persist = true                  // should the cookie persist after the browswer window is closed
-	session.Cookie.SameSite = http.SameSiteLaxMode // How strict do you want to be about the cookie
+	session.Cookie.Persist = true
+	session.Cookie.SameSite = http.SameSiteLaxMode
 	session.Cookie.Secure = app.InProduction
 
 	app.Session = session
 
 	tc, err := render.CreateTemplateCache()
 	if err != nil {
-		log.Fatal("cannot create template cache", err)
+		log.Fatal("cannot create template cache")
 	}
 
 	app.TemplateCache = tc
@@ -44,7 +44,7 @@ func main() {
 
 	render.NewTemplates(&app)
 
-	fmt.Println("Starting application on port: %s", portNumber)
+	fmt.Println(fmt.Sprintf("Staring application on port %s", portNumber))
 
 	srv := &http.Server{
 		Addr:    portNumber,
@@ -53,7 +53,6 @@ func main() {
 
 	err = srv.ListenAndServe()
 	if err != nil {
-		log.Fatal()
+		log.Fatal(err)
 	}
-
 }
